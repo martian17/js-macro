@@ -3,13 +3,13 @@ import {importFromString} from "module-from-string";
 
 interface Readable{
     render: () => Promise<string>;
-};
+}
 
 interface Pushable{
     push: (line: string) => void;
-};
+}
 
-class Plain implements Readable, Pushable{
+class Plain implements Readable, Pushable {
     lines: string[] = [];
     push(line: string){
         this.lines.push(line);
@@ -17,9 +17,9 @@ class Plain implements Readable, Pushable{
     async render(){
         return this.lines.join("\n");
     }
-};
+}
 
-class MacroImport implements Readable{
+class MacroImport implements Readable {
     constructor(
         public indent: string,
         public source: string,
@@ -35,10 +35,10 @@ class MacroImport implements Readable{
         if(!(block instanceof CodeBlock))throw new Error(`Export of name ${name} from the unit ${source} not an instance of CodeBlock`);
         return block.render(indent);
     }
-};
+}
 
 
-class MacroDefinition implements Pushable{
+class MacroDefinition implements Pushable {
     lines: string[] = [];
     constructor(
         public name: string
@@ -56,7 +56,7 @@ class MacroDefinition implements Pushable{
         }
         return this.cache[name];
     }
-};
+}
 
 // module dependency
 class CodeBlock {
@@ -95,7 +95,7 @@ class CodeBlock {
         }
         //find the common indent
         let baseIndent;
-        for(let line of lines){
+        for(const line of lines){
             if(line.match(/^\s*$/)){
                 continue;
             }
@@ -116,17 +116,17 @@ class CodeBlock {
                 }
             }
         }
-        const baseIndentLength = baseIndent ? baseIndent.length : 0;
+        const baseIndent_length = baseIndent ? baseIndent.length : 0;
         //removing common indent
-        for(let line of lines){
-            this.lines.push(line.slice(baseIndentLength));
+        for(const line of lines){
+            this.lines.push(line.slice(baseIndent_length));
         }
     }
     render(indent: string){
         //loop through the lines, and find the minimum indent
         return this.lines.map(line=>indent+line).join("\n");
     }
-};
+}
 
 
 export default async function main(args: string[]){
@@ -149,8 +149,8 @@ export default async function main(args: string[]){
     const macros = new Map<string, MacroDefinition>;
     let top: Pushable = new Plain();
     slices.push(top as Plain);
-    for(let line of lines){
-        if(!line.match(/^\s*\#\#\@/)){
+    for(const line of lines){
+        if(!line.match(/^\s*##@/)){
             top.push(line);
             continue;
         }
