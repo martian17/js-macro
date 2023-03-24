@@ -159,15 +159,18 @@ export default async function main(args: string[]){
     
         if(command === "begin"){
             const name = args[0];
-            top = new Macro_definition(name);
-            macros.set(name,top as Macro_definition);
+            const macro = new MacroDefinition(name);
+            macros.set(name,macro);
+            top = macro;
         }else if(command === "end"){
-            top = new Plain;
-            slices.push(top as Plain);
+            const plain = new Plain();
+            slices.push(plain);
+            top = plain;
         }else if(command === "import"){
-            slices.push(new Macro_import(indent, args[2], args[0], macros));
-            top = new Plain;
-            slices.push(top as Plain);
+            slices.push(new MacroImport(indent, args[2], args[0], macros));
+            const plain = new Plain();
+            slices.push(plain);
+            top = plain;
         }else{
             throw new Error(`Unknown macro command: ${command} ${args}`);
         }
