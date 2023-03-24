@@ -1,15 +1,15 @@
 import {promises as fs} from "fs";
 import {importFromString} from "module-from-string";
 
-interface codeSlice{
+interface Readable{
     render: () => Promise<string>;
 };
 
-interface pushable{
+interface Pushable{
     push: (line: string) => void;
 };
 
-class Plain implements codeSlice, pushable{
+class Plain implements Readable, Pushable{
     lines: string[] = [];
     push(line: string){
         this.lines.push(line);
@@ -19,12 +19,12 @@ class Plain implements codeSlice, pushable{
     }
 };
 
-class Macro_import implements codeSlice{
+class MacroImport implements Readable{
     constructor(
         public indent: string,
         public source: string,
         public name: string,
-        public macros: Map<string, Macro_definition>
+        public macros: Map<string, MacroDefinition>
     ){}
     async render(){
         const {macros, source, name, indent} = this;
@@ -38,7 +38,7 @@ class Macro_import implements codeSlice{
 };
 
 
-class Macro_definition implements pushable{
+class MacroDefinition implements Pushable{
     lines: string[] = [];
     constructor(
         public name: string
@@ -145,9 +145,9 @@ export default async function main(args: string[]){
     const src = "" + await fs.readFile(src_path);
     const lines = src.split("\n");
     
-    const slices: codeSlice[] = [];
-    const macros = new Map<string, Macro_definition>;
-    let top: pushable = new Plain();
+    const slices: Readable[] = [];
+    const macros = new Map<string, MacroDefinition>;
+    let top: Pushable = new Plain();
     slices.push(top as Plain);
     for(let line of lines){
         if(!line.match(/^\s*\#\#\@/)){
