@@ -1,0 +1,21 @@
+{
+  "name": "js-macro",
+  "version": "1.0.0",
+  "description": "Language agnostic macro system with javascript",
+  "type": "module",
+  "scripts": {
+      "build": "tsc"
+  },
+  "bin": {
+    "jsmacro": "./bin/jsmacro.mjs"
+  },
+  "keywords": ["macro", "build", "javascript", "universal", "language-agnostic"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "module-from-string": "^3.3.0"
+  }
+}
